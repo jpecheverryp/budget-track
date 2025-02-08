@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"budget-track.jpech.dev/handler"
 )
 
 type config struct {
@@ -18,6 +20,7 @@ func NewConfig() *config {
 
 type application struct {
 	config config
+    handler *handler.Handler
 }
 
 func (app *application) serve() error {
@@ -36,8 +39,10 @@ func (app *application) serve() error {
 func main() {
 	config := NewConfig()
 
+
 	app := &application{
 		config: *config,
+        handler: handler.NewHandler(handler.HandlerOptions{}),
 	}
 
 	err := app.serve()

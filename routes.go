@@ -2,17 +2,12 @@ package main
 
 import (
 	"net/http"
-
-	"budget-track.jpech.dev/views"
 )
 
 func (app *application) routes() http.Handler {
     mux := http.NewServeMux()
 
-    mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        component := views.Login()
-        component.Render(r.Context(), w)
-    })
+    mux.HandleFunc("GET /login", app.handler.Login)
 
     return mux
 }
