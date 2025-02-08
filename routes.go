@@ -3,14 +3,14 @@ package main
 import (
 	"net/http"
 
-	"budget-track.jpech.dev/views/layout"
+	"budget-track.jpech.dev/views"
 )
 
 func (app *application) routes() http.Handler {
     mux := http.NewServeMux()
 
     mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        component := layout.Base()
+        component := views.Login()
         component.Render(r.Context(), w)
     })
 
