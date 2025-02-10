@@ -1,9 +1,9 @@
 package handler
 
-type Handler struct {}
+type Handler struct{}
 
-type HandlerOptions struct {}
+type HandlerOptions struct{}
 
 func NewHandler(options HandlerOptions) *Handler {
-    return &Handler{}
+	return &Handler{}
 }

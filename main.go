@@ -19,14 +19,14 @@ func NewConfig() *config {
 }
 
 type application struct {
-	config config
-    handler *handler.Handler
+	config  config
+	handler *handler.Handler
 }
 
 func (app *application) serve() error {
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%d", app.config.port),
-        Handler: app.routes(),
+		Addr:    fmt.Sprintf(":%d", app.config.port),
+		Handler: app.routes(),
 	}
 	log.Println("Starting Server", "addr", srv.Addr)
 	err := srv.ListenAndServe()
@@ -39,10 +39,9 @@ func (app *application) serve() error {
 func main() {
 	config := NewConfig()
 
-
 	app := &application{
-		config: *config,
-        handler: handler.NewHandler(handler.HandlerOptions{}),
+		config:  *config,
+		handler: handler.NewHandler(handler.HandlerOptions{}),
 	}
 
 	err := app.serve()
