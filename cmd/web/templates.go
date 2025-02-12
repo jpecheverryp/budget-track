@@ -2,7 +2,10 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"path/filepath"
+
+	"budget-track.jpech.dev/ui"
 )
 
 type templateData struct {
@@ -11,22 +14,21 @@ type templateData struct {
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.html")
+    pages, err := fs.Glob(ui.Files, "html/pages/*.html")
 	if err != nil {
 		return nil, err
 	}
 
 	for _, page := range pages {
-
 		name := filepath.Base(page)
 
-		files := []string{
-			"./ui/html/base.html",
-			"./ui/html/partials/nav.html",
+		patterns := []string{
+			"html/base.html",
+			"html/partials/nav.html",
 			page,
 		}
 
-		ts, err := template.ParseFiles(files...)
+		ts, err := template.New(name).ParseFS(ui.Files, patterns...)
 		if err != nil {
 			return nil, err
 		}
