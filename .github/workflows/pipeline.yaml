@@ -1,0 +1,45 @@
+name: pipeline
+on:
+  push:
+    branches:
+      - "main"
+
+permissions:
+  packages: write
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+      - name: Install dependencies
+        run: go mod tidy
+      - name: Test with the Go CLI
+        run: go test ./...
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    needs:
+      - run-tests
+    steps:
+      - name: Chechout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/jpecheverryp/budget-app:latest
+            ghcr.io/jpecheverryp/budget-app:${{ github.sha }}
+
