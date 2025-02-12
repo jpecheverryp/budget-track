@@ -11,6 +11,10 @@ func main() {
 
 	mux := http.NewServeMux()
 
+    fileServer := http.FileServer(http.Dir("./ui/static/"))
+
+    mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
+
 	mux.HandleFunc("GET /{$}", getIndex)
     mux.HandleFunc("GET /transactions/view/{id}", getTransactionView)
     mux.HandleFunc("GET /transactions/create", getTransactionCreate)
