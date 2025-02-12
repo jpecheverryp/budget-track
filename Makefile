@@ -1,3 +1,3 @@
 dev:
 	templ generate
-	go run .
+	go run ./cmd/web/

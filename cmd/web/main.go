@@ -4,48 +4,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"budget-track.jpech.dev/handler"
 )
 
-type config struct {
-	port int
-}
-
-func NewConfig() *config {
-	return &config{
-		port: 8080,
-	}
-}
-
-type application struct {
-	config  config
-	handler *handler.Handler
-}
-
-func (app *application) serve() error {
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", app.config.port),
-		Handler: app.routes(),
-	}
-	log.Println("Starting Server", "addr", srv.Addr)
-	err := srv.ListenAndServe()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func main() {
-	config := NewConfig()
+	port := 8080
 
-	app := &application{
-		config:  *config,
-		handler: handler.NewHandler(handler.HandlerOptions{}),
-	}
+	mux := http.NewServeMux()
 
-	err := app.serve()
-	if err != nil {
-		log.Fatal(err)
-	}
+	mux.HandleFunc("GET /{$}", showIndex)
+	mux.HandleFunc("GET /login", showLogin)
+
+	log.Printf("starting server on :%d", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
+	log.Fatal(err)
 }
