@@ -24,12 +24,6 @@ The purpose of this project is to create a Budget Tracker.
 
 ## Technical Stack
 
-- Go
-- Templ
-- TailwindCSS
-- AlpineJS
-- HTMX
+- Golang
 - PostgreSQL
 - Docker
-
-
