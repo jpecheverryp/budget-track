@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"log/slog"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 
 type application struct {
 	logger *slog.Logger
+    templateCache map[string]*template.Template
 }
 
 func main() {
@@ -18,13 +20,20 @@ func main() {
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
+    templateCache, err := newTemplateCache()
+    if err!=nil{
+        logger.Error(err.Error())
+        os.Exit(1)
+    }
+
 	app := &application{
 		logger: logger,
+        templateCache: templateCache,
 	}
 
 	logger.Info("starting server", "port", *port)
 
-	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), app.routes())
+	err = http.ListenAndServe(fmt.Sprintf(":%d", *port), app.routes())
 	logger.Error(err.Error())
 	os.Exit(1)
 }
