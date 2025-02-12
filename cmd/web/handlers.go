@@ -1,16 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
-
-	"budget-track.jpech.dev/views"
+	"strconv"
 )
 
-func showIndex(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
+func getIndex(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("show transactions"))
 }
 
-func showLogin(w http.ResponseWriter, r *http.Request) {
-	component := views.Login()
-	component.Render(r.Context(), w)
+func getTransactionView(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+    fmt.Fprintf(w, "Showing a single transaction info with id: %d", id)
+}
+
+func getTransactionCreate(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Show page to add transaction"))
+}
+func postTransactionCreate(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Save a new transaction"))
 }

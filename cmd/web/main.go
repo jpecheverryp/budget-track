@@ -11,8 +11,11 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /{$}", showIndex)
-	mux.HandleFunc("GET /login", showLogin)
+	mux.HandleFunc("GET /{$}", getIndex)
+    mux.HandleFunc("GET /transactions/view/{id}", getTransactionView)
+    mux.HandleFunc("GET /transactions/create", getTransactionCreate)
+    mux.HandleFunc("POST /transactions/create", postTransactionCreate)
+
 
 	log.Printf("starting server on :%d", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
