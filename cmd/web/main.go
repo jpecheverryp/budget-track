@@ -1,6 +1,9 @@
 package main
 
 import (
+	"database/sql"
+	_ "github.com/lib/pq"
+
 	"flag"
 	"fmt"
 	"html/template"
@@ -10,25 +13,45 @@ import (
 )
 
 type application struct {
-	logger *slog.Logger
-    templateCache map[string]*template.Template
+	logger        *slog.Logger
+	templateCache map[string]*template.Template
 }
+
+const (
+	dbHost     = "db"
+	dbPort     = 5432
+	dbUser     = "budget-user"
+	dbPassword = "budget-password"
+	dbName     = "budget-track-db"
+)
 
 func main() {
 	port := flag.Int("port", 8080, "HTTP Network Port")
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		dbHost, dbPort, dbUser, dbPassword, dbName)
+
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-    templateCache, err := newTemplateCache()
-    if err!=nil{
-        logger.Error(err.Error())
-        os.Exit(1)
-    }
+	db, err := openDB(*&psqlInfo)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	defer db.Close()
+
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
 
 	app := &application{
-		logger: logger,
-        templateCache: templateCache,
+		logger:        logger,
+		templateCache: templateCache,
 	}
 
 	logger.Info("starting server", "port", *port)
@@ -36,4 +59,19 @@ func main() {
 	err = http.ListenAndServe(fmt.Sprintf(":%d", *port), app.routes())
 	logger.Error(err.Error())
 	os.Exit(1)
+}
+
+func openDB(dbInfo string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dbInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
 }
