@@ -23,5 +23,13 @@ func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Requ
 	w.Write([]byte("Show page to add transaction"))
 }
 func (app *application) postTransactionCreate(w http.ResponseWriter, r *http.Request) {
+    t, err := app.transactions.Insert("Laptop", 100000)
+    if err!=nil{
+        app.serverError(w, r, err)
+        return
+    }
+    app.logger.Info("called insert")
+    fmt.Print(t)
 	w.Write([]byte("Save a new transaction"))
+
 }
