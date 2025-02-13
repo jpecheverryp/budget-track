@@ -14,3 +14,13 @@ In the future there wil be a guest button here that will let users try the app w
 The main dashboard is inspired in other budgeting applications, it will be build by parts and contain useful information
 
 ![Dashboard Wireframe](./assets/dashboard-wireframe.png)
+
+### Accounts
+
+### View Accounts
+
+![View Accounts](./assets/view-accounts.png)
+
+### Add Accounts
+
+![Add Account](./assets/add-account-wireframe.png)
