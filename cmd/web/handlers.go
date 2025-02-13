@@ -7,7 +7,7 @@ import (
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
-    app.render(w, r, http.StatusOK, "home.html", templateData{})
+	app.render(w, r, http.StatusOK, "home.html", templateData{})
 }
 
 func (app *application) getTransactionView(w http.ResponseWriter, r *http.Request) {
