@@ -14,6 +14,10 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "home.html", templateData{})
 }
 
+func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, http.StatusOK, "dashboard.html", templateData{})
+}
+
 func (app *application) getTransactionView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id < 1 {
