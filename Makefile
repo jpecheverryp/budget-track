@@ -8,7 +8,7 @@ audit:
 
 ## dev: run application
 dev:
-	go run ./cmd/web/
+	docker compose -f ./compose.dev.yml down && docker compose -f ./compose.dev.yml up --build
 
 migrate-up:
 	migrate -path ./migrations -database 'postgres://budget-user:budget-password@localhost:8081/budget-track-db?sslmode=disable' up
