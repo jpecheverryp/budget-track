@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
+
+	"budget-track.jpech.dev/store"
+	"github.com/google/uuid"
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
@@ -23,13 +27,24 @@ func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Requ
 	w.Write([]byte("Show page to add transaction"))
 }
 func (app *application) postTransactionCreate(w http.ResponseWriter, r *http.Request) {
-	t, err := app.transactions.Insert("Laptop", 100000)
+	accountId, err := uuid.NewV6()
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
-	app.logger.Info("called insert")
-	fmt.Print(t)
+	err = app.transactions.Insert(&store.Transaction{
+		Description:     "laptop",
+		AccountID:       accountId,
+		ValueInCents:    100000,
+		TransactionDate: time.Now(),
+	})
+
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	app.logger.Info("created new transaction")
 	w.Write([]byte("Save a new transaction"))
 
 }
