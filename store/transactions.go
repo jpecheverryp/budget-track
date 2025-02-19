@@ -21,13 +21,13 @@ type TransactionModel struct {
 }
 
 func (m *TransactionModel) Insert(description string, valueInCents int) (Transaction, error) {
-    id, err := uuid.NewUUID()
-    if err!=nil{
-        return Transaction{}, err
-    }
-    return Transaction{
-        ID: id,
-        Description: description,
-        ValueInCents: valueInCents,
-    }, nil
+	id, err := uuid.NewUUID()
+	if err != nil {
+		return Transaction{}, err
+	}
+	return Transaction{
+		ID:           id,
+		Description:  description,
+		ValueInCents: valueInCents,
+	}, nil
 }

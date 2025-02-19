@@ -17,7 +17,7 @@ import (
 type application struct {
 	logger        *slog.Logger
 	templateCache map[string]*template.Template
-    transactions store.TransactionModelInterface
+	transactions  store.TransactionModelInterface
 }
 
 const (
@@ -55,9 +55,9 @@ func main() {
 	app := &application{
 		logger:        logger,
 		templateCache: templateCache,
-        transactions: &store.TransactionModel{
-            DB: db,
-        },
+		transactions: &store.TransactionModel{
+			DB: db,
+		},
 	}
 
 	logger.Info("starting server", "port", *port)
