@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 
-	"budget-track.jpech.dev/store"
+	"budget-track.jpech.dev/internal/store"
 	_ "github.com/lib/pq"
 
 	"flag"

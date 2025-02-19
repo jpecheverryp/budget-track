@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"budget-track.jpech.dev/store"
+	"budget-track.jpech.dev/internal/store"
 	"github.com/google/uuid"
 )
 
