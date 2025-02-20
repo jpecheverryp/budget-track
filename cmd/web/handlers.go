@@ -52,3 +52,23 @@ func (app *application) postTransactionCreate(w http.ResponseWriter, r *http.Req
 	w.Write([]byte("Save a new transaction"))
 
 }
+
+type userRegisterForm struct {
+	Username string `form:"username"`
+	Email    string `form:"email"`
+	Password string `form:"password"`
+}
+
+func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, http.StatusOK, "register.html", templateData{})
+}
+
+func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
+	var form userRegisterForm
+
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+	}
+
+}

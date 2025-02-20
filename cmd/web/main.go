@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"budget-track.jpech.dev/internal/store"
+	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
 
 	"flag"
@@ -18,6 +19,7 @@ type application struct {
 	logger        *slog.Logger
 	templateCache map[string]*template.Template
 	transactions  store.TransactionModelInterface
+	formDecoder   *form.Decoder
 }
 
 const (
@@ -52,12 +54,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	formDecoder := form.NewDecoder()
+
 	app := &application{
 		logger:        logger,
 		templateCache: templateCache,
 		transactions: &store.TransactionModel{
 			DB: db,
 		},
+		formDecoder: formDecoder,
 	}
 
 	logger.Info("starting server", "port", *port)
