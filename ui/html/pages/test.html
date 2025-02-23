@@ -9,15 +9,16 @@
         <th>Account Name</th>
         <th>User ID</th>
     </tr>
-    <td>{{.ID}}</td>
-    <td>{{.Name}}</td>
-    <td>{{.UserID}}</td>
-    
-    {{.}}
+    {{range .Accounts}}
+    <tr>
+        <td>{{.ID}}</td>
+        <td>{{.Name}}</td>
+        <td>{{.UserID}}</td>
+    </tr>
     {{end}}
 </table>
 <form action="/accounts/create" method="post">
-<button type="submit">New Transaction</button>
+    <button type="submit">New Transaction</button>
 </form>
 <h3>Transactions</h3>
 <table>
