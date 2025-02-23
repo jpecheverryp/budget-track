@@ -10,5 +10,11 @@ audit:
 dev:
 	docker compose -f ./compose.dev.yml down && docker compose -f ./compose.dev.yml up --build
 
-migrate-up:
+## db/migrate-up Run migration file
+db/migrate-up:
 	migrate -path ./migrations -database 'postgres://budget-user:budget-password@localhost:8081/budget-track-db?sslmode=disable' up
+
+## db/nuke
+db/nuke:
+	docker compose -f ./compose.dev.yml down -v
+
