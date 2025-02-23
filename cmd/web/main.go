@@ -1,11 +1,12 @@
 package main
 
 import (
-	"database/sql"
+	"context"
 
+	"budget-track.jpech.dev/internal/repository"
 	"budget-track.jpech.dev/internal/store"
 	"github.com/go-playground/form/v4"
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v5"
 
 	"flag"
 	"fmt"
@@ -20,6 +21,7 @@ type application struct {
 	templateCache map[string]*template.Template
 	transactions  store.TransactionModelInterface
 	formDecoder   *form.Decoder
+	repo          repository.Queries
 }
 
 const (
@@ -28,25 +30,25 @@ const (
 	dbUser     = "budget-user"
 	dbPassword = "budget-password"
 	dbName     = "budget-track-db"
+	sslMode    = "disable"
 )
 
 func main() {
 	port := flag.Int("port", 8080, "HTTP Network Port")
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
-
 	flag.Parse()
+	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode)
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-	db, err := openDB(*&psqlInfo)
+	ctx := context.Background()
+	conn, err := pgx.Connect(ctx, dbUrl)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
+	defer conn.Close(ctx)
 
-	defer db.Close()
+	repo := repository.New(conn)
 
 	templateCache, err := newTemplateCache()
 	if err != nil {
@@ -59,10 +61,8 @@ func main() {
 	app := &application{
 		logger:        logger,
 		templateCache: templateCache,
-		transactions: &store.TransactionModel{
-			DB: db,
-		},
-		formDecoder: formDecoder,
+		formDecoder:   formDecoder,
+		repo:          *repo,
 	}
 
 	logger.Info("starting server", "port", *port)
@@ -70,19 +70,4 @@ func main() {
 	err = http.ListenAndServe(fmt.Sprintf(":%d", *port), app.routes())
 	logger.Error(err.Error())
 	os.Exit(1)
-}
-
-func openDB(dbInfo string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", dbInfo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = db.Ping()
-	if err != nil {
-		db.Close()
-		return nil, err
-	}
-
-	return db, nil
 }

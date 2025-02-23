@@ -5,10 +5,12 @@ import (
 	"io/fs"
 	"path/filepath"
 
+	"budget-track.jpech.dev/internal/repository"
 	"budget-track.jpech.dev/ui"
 )
 
 type templateData struct {
+	accounts []repository.Account
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

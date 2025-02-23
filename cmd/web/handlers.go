@@ -4,10 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
-
-	"budget-track.jpech.dev/internal/store"
-	"github.com/google/uuid"
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +11,13 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, http.StatusOK, "test.html", templateData{})
+	accounts, err := app.repo.ReadAllAccounts(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+	app.render(w, r, http.StatusOK, "test.html", templateData{
+		accounts: accounts,
+	})
 }
 
 func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {
@@ -34,26 +36,16 @@ func (app *application) getTransactionView(w http.ResponseWriter, r *http.Reques
 func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Show page to add transaction"))
 }
-func (app *application) postTransactionCreate(w http.ResponseWriter, r *http.Request) {
-	accountId, err := uuid.NewV6()
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-	err = app.transactions.Insert(&store.Transaction{
-		Description:     "laptop",
-		AccountID:       accountId,
-		ValueInCents:    100000,
-		TransactionDate: time.Now(),
-	})
 
+func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request) {
+	_, err := app.repo.CreateAccount(r.Context(), "Chase")
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
 	app.logger.Info("created new transaction")
-	w.Write([]byte("Save a new transaction"))
+	http.Redirect(w, r, "/test", http.StatusSeeOther)
 
 }
 
