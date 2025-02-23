@@ -5,6 +5,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -13,18 +15,19 @@ type Account struct {
 	ID        uuid.UUID
 	Name      string
 	UserID    uuid.UUID
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Transaction struct {
 	ID              uuid.UUID
 	Description     string
 	AccountID       uuid.UUID
+	UserID          uuid.UUID
 	ValueInCents    int32
 	TransactionDate pgtype.Date
-	CreatedAt       pgtype.Timestamp
-	UpdatedAt       pgtype.Timestamp
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 type UserAccount struct {
@@ -32,6 +35,6 @@ type UserAccount struct {
 	Username     string
 	Email        string
 	PasswordHash string
-	CreatedAt    pgtype.Timestamp
-	UpdatedAt    pgtype.Timestamp
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
