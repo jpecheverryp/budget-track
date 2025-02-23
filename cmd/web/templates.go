@@ -10,7 +10,7 @@ import (
 )
 
 type templateData struct {
-	accounts []repository.Account
+	Accounts []repository.Account
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

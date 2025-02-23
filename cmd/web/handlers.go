@@ -16,7 +16,7 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, r, err)
 	}
 	app.render(w, r, http.StatusOK, "test.html", templateData{
-		accounts: accounts,
+		Accounts: accounts,
 	})
 }
 
