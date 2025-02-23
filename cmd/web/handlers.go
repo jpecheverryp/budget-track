@@ -14,6 +14,10 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "home.html", templateData{})
 }
 
+func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, http.StatusOK, "test.html", templateData{})
+}
+
 func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "dashboard.html", templateData{})
 }
