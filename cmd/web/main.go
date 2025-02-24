@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"budget-track.jpech.dev/internal/repository"
-	"budget-track.jpech.dev/internal/store"
 	"github.com/go-playground/form/v4"
 	"github.com/jackc/pgx/v5"
 
@@ -19,7 +18,6 @@ import (
 type application struct {
 	logger        *slog.Logger
 	templateCache map[string]*template.Template
-	transactions  store.TransactionModelInterface
 	formDecoder   *form.Decoder
 	repo          repository.Queries
 }
