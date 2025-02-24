@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 
-	"budget-track.jpech.dev/internal/repository"
 	"github.com/go-playground/form/v4"
 	"github.com/jackc/pgx/v5"
+	"github.com/jpecheverryp/budget-track/internal/repository"
 
 	"flag"
 	"fmt"

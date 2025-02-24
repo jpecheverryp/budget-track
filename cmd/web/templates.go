@@ -5,8 +5,8 @@ import (
 	"io/fs"
 	"path/filepath"
 
-	"budget-track.jpech.dev/internal/repository"
-	"budget-track.jpech.dev/ui"
+	"github.com/jpecheverryp/budget-track/internal/repository"
+	"github.com/jpecheverryp/budget-track/ui"
 )
 
 type templateData struct {

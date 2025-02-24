@@ -1,4 +1,4 @@
-module budget-track.jpech.dev
+module github.com/jpecheverryp/budget-track
 
 go 1.23
 
