@@ -3,9 +3,6 @@ FROM golang:1.23 AS build
 
 WORKDIR /app
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
-RUN templ generate
-
 COPY go.mod go.sum views/ ./
 
 RUN go mod download
