@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/jpecheverryp/budget-track/views/page"
+	page "github.com/jpecheverryp/budget-track/views/page"
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
