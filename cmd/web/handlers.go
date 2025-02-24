@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"budget-track.jpech.dev/views/page"
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +58,8 @@ type userRegisterForm struct {
 }
 
 func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, http.StatusOK, "register.html", templateData{})
+	component := page.Register()
+	component.Render(r.Context(), w)
 }
 
 func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {

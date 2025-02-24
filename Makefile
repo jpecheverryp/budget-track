@@ -8,6 +8,7 @@ audit:
 
 ## dev: run application
 dev:
+	templ generate
 	docker compose -f ./compose.dev.yml down && docker compose -f ./compose.dev.yml up --build
 
 ## db/migrate-up Run migration file
