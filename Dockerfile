@@ -1,22 +1,14 @@
-# Build Stage
+# Build
 FROM golang:1.23 AS build
-
-WORKDIR /src
-
-COPY go.* ./
-
-RUN go mod download
-
-COPY . .
-
-RUN go build -o /bin/web ./cmd/web/
-
-# Smaller Image for Deployment
-FROM gcr.io/distroless/base-debian12
-
 WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . /app
+RUN CGO_ENABLED=0 GOOS=linux go build -o /bin/web ./cmd/web/
 
+# Release
+FROM gcr.io/distroless/base-debian12 AS release
+WORKDIR /
 COPY --from=build /bin/web /bin/web
-
 CMD ["/bin/web"]
 
