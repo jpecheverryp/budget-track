@@ -18,7 +18,7 @@ import (
 type application struct {
 	logger        *slog.Logger
 	templateCache map[string]*template.Template
-	accounts      *service.AccountService
+	service       service.Service
 }
 
 const (
@@ -47,8 +47,6 @@ func main() {
 
 	repo := repository.New(conn)
 
-	accounts := service.New(*repo)
-
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		logger.Error(err.Error())
@@ -58,7 +56,7 @@ func main() {
 	app := &application{
 		logger:        logger,
 		templateCache: templateCache,
-		accounts:      accounts,
+		service:       service.New(*repo),
 	}
 
 	logger.Info("starting server", "port", *port)

@@ -14,7 +14,7 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
-	accounts, err := app.accounts.GetAll(r.Context())
+	accounts, err := app.service.Accounts.GetAll(r.Context())
 
 	if err != nil {
 		app.serverError(w, r, err)
@@ -47,7 +47,7 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 	accountInput := service.AccountCreateInput{
 		AccountName: "Fidelity",
 	}
-	_, err := app.accounts.Insert(r.Context(), accountInput)
+	_, err := app.service.Accounts.Insert(r.Context(), accountInput)
 	if err != nil {
 		app.serverError(w, r, err)
 		return

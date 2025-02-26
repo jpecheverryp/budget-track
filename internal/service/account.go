@@ -10,12 +10,6 @@ type AccountService struct {
 	repo repository.Queries
 }
 
-func New(repo repository.Queries) *AccountService {
-	return &AccountService{
-		repo: repo,
-	}
-}
-
 func (a *AccountService) GetAll(ctx context.Context) ([]repository.Account, error) {
 	accounts, err := a.repo.ReadAllAccounts(ctx)
 	if err != nil {
