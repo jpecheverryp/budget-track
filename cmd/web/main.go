@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 
-	"github.com/go-playground/form/v4"
 	"github.com/jackc/pgx/v5"
 	"github.com/jpecheverryp/budget-track/internal/repository"
 
@@ -18,7 +17,6 @@ import (
 type application struct {
 	logger        *slog.Logger
 	templateCache map[string]*template.Template
-	formDecoder   *form.Decoder
 	repo          repository.Queries
 }
 
@@ -54,12 +52,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	formDecoder := form.NewDecoder()
-
 	app := &application{
 		logger:        logger,
 		templateCache: templateCache,
-		formDecoder:   formDecoder,
 		repo:          *repo,
 	}
 

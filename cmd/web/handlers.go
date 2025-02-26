@@ -52,9 +52,9 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 }
 
 type userRegisterForm struct {
-	Username string `form:"username"`
-	Email    string `form:"email"`
-	Password string `form:"password"`
+	Username string
+	Email    string
+	Password string
 }
 
 func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
@@ -66,11 +66,17 @@ func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
-	var form userRegisterForm
+	r.ParseForm()
 
-	err := app.decodePostForm(r, &form)
-	if err != nil {
-		app.clientError(w, http.StatusBadRequest)
+	registerFormData := &userRegisterForm{
+		Username: r.Form.Get("username"),
+		Email:    r.Form.Get("email"),
+		Password: r.Form.Get("password"),
 	}
 
+	app.logger.Info("form: ", "username", registerFormData.Username)
+	app.logger.Info("form: ", "email", registerFormData.Email)
+	app.logger.Info("form: ", "password", registerFormData.Password)
+
+	http.Redirect(w, r, "/test", http.StatusSeeOther)
 }

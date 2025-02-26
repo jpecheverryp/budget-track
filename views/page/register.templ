@@ -8,7 +8,7 @@ templ Register() {
 		<form action="/auth/register" method="POST" novalidate>
 			<div>
 				<label>Username: </label>
-				<input type="text" name="email"/>
+				<input type="text" name="username"/>
 			</div>
 			<div>
 				<label>Email: </label>
@@ -22,5 +22,6 @@ templ Register() {
 				<input type="submit" value="Register"/>
 			</div>
 		</form>
+        <a href="/auth/login">Login</a>
 	}
 }
