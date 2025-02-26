@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS account (
 
 CREATE TABLE IF NOT EXISTS user_account (
     id uuid PRIMARY KEY,
-    username text NOT NULL,
-    email text NOT NULL,
-    password_hash text NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password_hash CHAR(60) NOT NULL,
     created_at timestamptz NOT NULL DEFAULT NOW(),
     updated_at timestamptz NOT NULL DEFAULT NOW()
 );

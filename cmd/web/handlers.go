@@ -82,5 +82,7 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 	app.logger.Info("form: ", "email", registerFormData.Email)
 	app.logger.Info("form: ", "password", registerFormData.Password)
 
+	app.logger.Info("user created succesfully")
+
 	http.Redirect(w, r, "/test", http.StatusSeeOther)
 }
