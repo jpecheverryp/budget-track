@@ -5,6 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jpecheverryp/budget-track/internal/repository"
+	"github.com/jpecheverryp/budget-track/internal/service"
 
 	"flag"
 	"fmt"
@@ -17,7 +18,7 @@ import (
 type application struct {
 	logger        *slog.Logger
 	templateCache map[string]*template.Template
-	repo          repository.Queries
+	accounts      *service.AccountService
 }
 
 const (
@@ -46,6 +47,8 @@ func main() {
 
 	repo := repository.New(conn)
 
+	accounts := service.New(*repo)
+
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		logger.Error(err.Error())
@@ -55,7 +58,7 @@ func main() {
 	app := &application{
 		logger:        logger,
 		templateCache: templateCache,
-		repo:          *repo,
+		accounts:      accounts,
 	}
 
 	logger.Info("starting server", "port", *port)

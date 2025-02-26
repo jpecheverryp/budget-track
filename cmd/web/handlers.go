@@ -13,10 +13,13 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
-	accounts, err := app.repo.ReadAllAccounts(r.Context())
+	accounts, err := app.accounts.GetAll(r.Context())
+
 	if err != nil {
 		app.serverError(w, r, err)
+		return
 	}
+
 	app.render(w, r, http.StatusOK, "test.html", templateData{
 		Accounts: accounts,
 	})
@@ -40,7 +43,7 @@ func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Requ
 }
 
 func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request) {
-	_, err := app.repo.CreateAccount(r.Context(), "Chase")
+	_, err := app.accounts.Insert(r.Context())
 	if err != nil {
 		app.serverError(w, r, err)
 		return
