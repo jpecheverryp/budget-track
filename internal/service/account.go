@@ -25,8 +25,12 @@ func (a *AccountService) GetAll(ctx context.Context) ([]repository.Account, erro
 	return accounts, nil
 }
 
-func (a *AccountService) Insert(ctx context.Context) (repository.Account, error) {
-	account, err := a.repo.CreateAccount(ctx, "Wealthfront")
+type AccountCreateInput struct {
+	AccountName string
+}
+
+func (a *AccountService) Insert(ctx context.Context, accountData AccountCreateInput) (repository.Account, error) {
+	account, err := a.repo.CreateAccount(ctx, accountData.AccountName)
 	if err != nil {
 		return repository.Account{}, err
 	}

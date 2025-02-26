@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/jpecheverryp/budget-track/internal/service"
 	"github.com/jpecheverryp/budget-track/views/page"
 )
 
@@ -43,7 +44,10 @@ func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Requ
 }
 
 func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request) {
-	_, err := app.accounts.Insert(r.Context())
+	accountInput := service.AccountCreateInput{
+		AccountName: "Fidelity",
+	}
+	_, err := app.accounts.Insert(r.Context(), accountInput)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
