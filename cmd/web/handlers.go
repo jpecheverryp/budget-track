@@ -66,7 +66,11 @@ func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
 	registerFormData := &userRegisterForm{
 		Username: r.Form.Get("username"),
