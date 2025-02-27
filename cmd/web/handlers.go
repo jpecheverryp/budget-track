@@ -10,7 +10,11 @@ import (
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, http.StatusOK, "home.html", templateData{})
+	component := page.Home()
+	err := component.Render(r.Context(), w)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
