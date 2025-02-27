@@ -15,15 +15,20 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 	accounts, err := app.service.Accounts.GetAll(r.Context())
-
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "test.html", templateData{
+	pageData := page.TestPageData{
 		Accounts: accounts,
-	})
+	}
+
+	component := page.TestAPI(pageData)
+	err = component.Render(r.Context(), w)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {

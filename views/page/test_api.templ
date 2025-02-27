@@ -1,0 +1,41 @@
+package page
+
+import "github.com/jpecheverryp/budget-track/views/layout"
+import "github.com/jpecheverryp/budget-track/internal/repository"
+
+type TestPageData struct {
+	Accounts []repository.Account
+}
+
+templ TestAPI(testPageData TestPageData) {
+	@layout.Guest() {
+		<h1>API Test Page</h1>
+		<h2>Accounts:</h2>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Account Name</th>
+			</tr>
+			for _, account := range testPageData.Accounts {
+				<tr>
+					<td>{ account.ID.String() }</td>
+					<td>{ account.Name }</td>
+				</tr>
+			}
+		</table>
+		<form action="/accounts/create" method="post">
+			<button type="submit">New Transaction</button>
+		</form>
+		<h2>Transactions: </h2>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Transaction Name</th>
+			</tr>
+			<tr>
+				<td>123</td>
+				<td>Transaction Name</td>
+			</tr>
+		</table>
+	}
+}
