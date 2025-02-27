@@ -57,16 +57,22 @@ func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Requ
 }
 
 func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request) {
-	accountInput := service.AccountCreateInput{
-		AccountName: "Fidelity",
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
 	}
-	_, err := app.service.Accounts.Insert(r.Context(), accountInput)
+
+	accountInput := service.AccountCreateInput{
+		AccountName: r.Form.Get("account-name"),
+	}
+
+	_, err = app.service.Accounts.Insert(r.Context(), accountInput)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
-	app.logger.Info("created new transaction")
+	app.logger.Info("created new account")
 	http.Redirect(w, r, "/test", http.StatusSeeOther)
 
 }

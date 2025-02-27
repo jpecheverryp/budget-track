@@ -24,7 +24,8 @@ templ TestAPI(testPageData TestPageData) {
 			}
 		</table>
 		<form action="/accounts/create" method="post">
-			<button type="submit">New Transaction</button>
+            <input name="account-name" type="text" placeholder="Wealthfront" />
+			<button type="submit">New Account</button>
 		</form>
 		<h2>Transactions: </h2>
 		<table>
