@@ -1,5 +1,7 @@
 package layout
 
+import "github.com/jpecheverryp/budget-track/views/partial"
+
 templ Base() {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -9,6 +11,7 @@ templ Base() {
 			<title>Budget-Track</title>
 		</head>
 		<body>
+        @partial.Navbar()
 			{ children... }
 		</body>
 	</html>
