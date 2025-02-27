@@ -36,7 +36,11 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, http.StatusOK, "dashboard.html", templateData{})
+	component := page.MainDashboard()
+	err := component.Render(r.Context(), w)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) getTransactionView(w http.ResponseWriter, r *http.Request) {
