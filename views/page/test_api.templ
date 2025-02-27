@@ -5,12 +5,14 @@ import "github.com/jpecheverryp/budget-track/internal/repository"
 
 type TestPageData struct {
 	Accounts []repository.Account
-    Flash string
+	Flash    string
 }
 
 templ TestAPI(testPageData TestPageData) {
 	@layout.Guest() {
-        <p>{testPageData.Flash}</p>
+		if len(testPageData.Flash) >0 {
+			<p>{ testPageData.Flash }</p>
+		}
 		<h1>API Test Page</h1>
 		<h2>Accounts:</h2>
 		<table>
@@ -26,7 +28,7 @@ templ TestAPI(testPageData TestPageData) {
 			}
 		</table>
 		<form action="/accounts/create" method="post">
-            <input name="account-name" type="text" placeholder="Wealthfront" />
+			<input name="account-name" type="text" placeholder="Wealthfront"/>
 			<button type="submit">New Account</button>
 		</form>
 		<h2>Transactions: </h2>
