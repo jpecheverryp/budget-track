@@ -1,9 +1,11 @@
 package main
 
 import (
-	"context"
+	"database/sql"
+	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/jpecheverryp/budget-track/internal/repository"
 	"github.com/jpecheverryp/budget-track/internal/service"
 
@@ -12,11 +14,14 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 type application struct {
-	logger  *slog.Logger
-	service service.Service
+	logger         *slog.Logger
+	service        service.Service
+	sessionManager *scs.SessionManager
 }
 
 const (
@@ -35,19 +40,23 @@ func main() {
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, dbUrl)
+	db, err := sql.Open("postgres", dbUrl)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
-	defer conn.Close(ctx)
+	defer db.Close()
 
-	repo := repository.New(conn)
+	repo := repository.New(db)
+
+	sessionManager := scs.New()
+	sessionManager.Store = postgresstore.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
 
 	app := &application{
-		logger:  logger,
-		service: service.New(*repo),
+		logger:         logger,
+		service:        service.New(*repo),
+		sessionManager: sessionManager,
 	}
 
 	logger.Info("starting server", "port", *port)

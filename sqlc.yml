@@ -7,7 +7,7 @@ sql:
       go:
         package: "repository"
         out: "internal/repository"
-        sql_package: "pgx/v5"
+        sql_package: "database/sql"
         overrides: 
           - db_type: "uuid"
             go_type:

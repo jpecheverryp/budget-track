@@ -16,7 +16,7 @@ RETURNING id, name, user_id, created_at, updated_at
 `
 
 func (q *Queries) CreateAccount(ctx context.Context, name string) (Account, error) {
-	row := q.db.QueryRow(ctx, createAccount, name)
+	row := q.db.QueryRowContext(ctx, createAccount, name)
 	var i Account
 	err := row.Scan(
 		&i.ID,
@@ -33,7 +33,7 @@ SELECT id, name, user_id, created_at, updated_at FROM account
 `
 
 func (q *Queries) ReadAllAccounts(ctx context.Context) ([]Account, error) {
-	rows, err := q.db.Query(ctx, readAllAccounts)
+	rows, err := q.db.QueryContext(ctx, readAllAccounts)
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +51,9 @@ func (q *Queries) ReadAllAccounts(ctx context.Context) ([]Account, error) {
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
