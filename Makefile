@@ -13,19 +13,19 @@ dev:
 
 .PHONY: db/start
 db/start:
-	docker compose -f ./compose.dev.yml down && docker compose -f ./compose.dev.yml up
+	docker compose down && docker compose up
 
 ## db/migrate-up Run migration file
 .PHONY: db/migrate-up
 db/migrate-up:
 	migrate -path ./migrations -database 'postgres://budget-user:budget-password@localhost:8081/budget-track-db?sslmode=disable' up
 
-## db/nuke
+## db/nuke: Destroy all data in container
 .PHONY: db/nuke
 db/nuke:
-	docker compose -f ./compose.dev.yml down -v
+	docker compose down -v
 
-## Build Executable
+## build: Build Executable
 .PHONY: build
 build: audit
 	templ generate && \
