@@ -24,6 +24,6 @@ func (app *application) routes() http.Handler {
 	mux.Handle("GET /auth/register", dynamic.ThenFunc(app.getRegister))
 	mux.Handle("POST /auth/register", dynamic.ThenFunc(app.postRegister))
 
-    standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
-    return standard.Then(mux)
+	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
+	return standard.Then(mux)
 }

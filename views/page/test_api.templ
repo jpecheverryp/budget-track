@@ -5,10 +5,12 @@ import "github.com/jpecheverryp/budget-track/internal/repository"
 
 type TestPageData struct {
 	Accounts []repository.Account
+    Flash string
 }
 
 templ TestAPI(testPageData TestPageData) {
 	@layout.Guest() {
+        <p>{testPageData.Flash}</p>
 		<h1>API Test Page</h1>
 		<h2>Accounts:</h2>
 		<table>

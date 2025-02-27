@@ -24,8 +24,11 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	flash := app.sessionManager.PopString(r.Context(), "flash")
+
 	pageData := page.TestPageData{
 		Accounts: accounts,
+		Flash:    flash,
 	}
 
 	component := page.TestAPI(pageData)
@@ -73,6 +76,7 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 	}
 
 	app.logger.Info("created new account")
+	app.sessionManager.Put(r.Context(), "flash", "account added succesfully!")
 	http.Redirect(w, r, "/test", http.StatusSeeOther)
 
 }
