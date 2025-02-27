@@ -1,2 +1,5 @@
 *_templ.go
 .DS_Store
+static/css/tailwind.css
+node_modules/
+bin/
