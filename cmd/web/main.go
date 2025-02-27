@@ -20,8 +20,8 @@ type application struct {
 }
 
 const (
-	dbHost     = "db"
-	dbPort     = 5432
+	dbHost     = "localhost"
+	dbPort     = 8081
 	dbUser     = "budget-user"
 	dbPassword = "budget-password"
 	dbName     = "budget-track-db"
