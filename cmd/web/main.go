@@ -9,16 +9,14 @@ import (
 
 	"flag"
 	"fmt"
-	"html/template"
 	"log/slog"
 	"net/http"
 	"os"
 )
 
 type application struct {
-	logger        *slog.Logger
-	templateCache map[string]*template.Template
-	service       service.Service
+	logger  *slog.Logger
+	service service.Service
 }
 
 const (
@@ -47,16 +45,9 @@ func main() {
 
 	repo := repository.New(conn)
 
-	templateCache, err := newTemplateCache()
-	if err != nil {
-		logger.Error(err.Error())
-		os.Exit(1)
-	}
-
 	app := &application{
-		logger:        logger,
-		templateCache: templateCache,
-		service:       service.New(*repo),
+		logger:  logger,
+		service: service.New(*repo),
 	}
 
 	logger.Info("starting server", "port", *port)
