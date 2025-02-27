@@ -2,11 +2,8 @@ package main
 
 import "net/http"
 
-func (app *application) routes() *http.ServeMux {
+func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("GET /{$}", app.getIndex)
 	mux.HandleFunc("GET /test", app.getTest)
@@ -19,5 +16,5 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("GET /auth/register", app.getRegister)
 	mux.HandleFunc("POST /auth/register", app.postRegister)
 
-	return mux
+	return commonHeaders(mux)
 }
