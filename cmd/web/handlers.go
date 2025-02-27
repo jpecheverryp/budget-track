@@ -81,20 +81,21 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 
 }
 
-type userRegisterForm struct {
+type registerFormData struct {
 	Username string
 	Email    string
 	Password string
 }
 
+// Show form to register
 func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
 	err := page.Register().Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
-		return
 	}
 }
 
+// Create new user
 func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -102,7 +103,7 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	registerFormData := &userRegisterForm{
+	registerFormData := &registerFormData{
 		Username: r.Form.Get("username"),
 		Email:    r.Form.Get("email"),
 		Password: r.Form.Get("password"),
@@ -115,4 +116,42 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 	app.logger.Info("user created succesfully")
 
 	http.Redirect(w, r, "/test", http.StatusSeeOther)
+}
+
+type loginFormData struct {
+	Username string
+	Email    string
+	Password string
+}
+
+func (app *application) getLogin(w http.ResponseWriter, r *http.Request) {
+	err := page.Login().Render(r.Context(), w)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+}
+
+// Create new user
+func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	loginFormData := &loginFormData{
+		Email:    r.Form.Get("email"),
+		Password: r.Form.Get("password"),
+	}
+
+	app.logger.Info("form: ", "email", loginFormData.Email)
+	app.logger.Info("form: ", "password", loginFormData.Password)
+
+	app.logger.Info("user authenticated succesfully")
+
+	http.Redirect(w, r, "/test", http.StatusSeeOther)
+}
+
+func (app *application) postLogout(w http.ResponseWriter, r *http.Request) {
+    app.logger.Info("user logged out succesfully")
 }

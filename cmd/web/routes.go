@@ -23,6 +23,9 @@ func (app *application) routes() http.Handler {
 
 	mux.Handle("GET /auth/register", dynamic.ThenFunc(app.getRegister))
 	mux.Handle("POST /auth/register", dynamic.ThenFunc(app.postRegister))
+	mux.Handle("GET /auth/login", dynamic.ThenFunc(app.getLogin))
+	mux.Handle("POST /auth/login", dynamic.ThenFunc(app.postLogin))
+	mux.Handle("POST /auth/logout", dynamic.ThenFunc(app.postLogout))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
 	return standard.Then(mux)

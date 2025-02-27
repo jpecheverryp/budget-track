@@ -1,0 +1,23 @@
+package page
+
+import "github.com/jpecheverryp/budget-track/views/layout"
+
+templ Login() {
+    @layout.Guest() {
+        <h1>Login</h1>
+		<form action="/auth/login" method="POST" novalidate>
+			<div>
+				<label>Email: </label>
+				<input type="email" name="email"/>
+			</div>
+			<div>
+				<label>Password: </label>
+				<input type="password" name="password"/>
+			</div>
+			<div>
+				<input type="submit" value="Login"/>
+			</div>
+		</form>
+        <a href="/auth/register">Register</a>
+    }
+}
