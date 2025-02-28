@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"regexp"
 	"strconv"
 
 	"github.com/jpecheverryp/budget-track/internal/service"
+	"github.com/jpecheverryp/budget-track/internal/validator"
 	"github.com/jpecheverryp/budget-track/views/page"
 )
 
@@ -82,51 +82,10 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 
 }
 
-type registerFormData struct {
-	Values struct {
-		Username string
-		Email    string
-		Password string
-	}
-	Errors struct {
-		Username string
-		Email    string
-		Password string
-	}
-}
-
-func (f *registerFormData) Validate() bool {
-	var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	isValidForm := true
-
-	// Check Username
-	if f.Values.Username == "" {
-		f.Errors.Username = "This field cannot be blank"
-		isValidForm = false
-	}
-
-	// Check Email
-	if f.Values.Email == "" {
-		f.Errors.Email = "This field cannot be blank"
-		isValidForm = false
-	}
-	if !EmailRX.MatchString(f.Values.Email) {
-		f.Errors.Email = "This field must be a valid email address"
-		isValidForm = false
-	}
-
-	// Check Password
-	if f.Values.Password == "" {
-		f.Errors.Password = "This field cannot be blank"
-		isValidForm = false
-	}
-
-	return isValidForm
-}
-
 // Show form to register
 func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
-	err := page.Register().Render(r.Context(), w)
+	registerFormData := page.RegisterFormData{}
+	err := page.Register(registerFormData).Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
@@ -140,26 +99,22 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	registerFormData := &registerFormData{
-		Values: struct {
-			Username string
-			Email    string
-			Password string
-		}{
-			Username: r.Form.Get("username"),
-			Email:    r.Form.Get("email"),
-			Password: r.Form.Get("password"),
-		},
+	form := page.RegisterFormData{
+		Username: r.Form.Get("username"),
+		Email:    r.Form.Get("email"),
+		Password: r.Form.Get("password"),
 	}
 
-	isValid := registerFormData.Validate()
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
+	app.logger.Info("username:", "username", form.Username, "notblank", validator.NotBlank(form.Username))
 
-	if !isValid {
-		component := page.Register()
+	form.CheckField(validator.NotBlank(form.Username), "username", "This field cannot be blank")
+	form.CheckField(validator.NotBlank(form.Email), "username", "This field cannot be blank")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
+	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
+	form.CheckField(validator.MinChars(form.Password, 8), "password", "This field must be at least 8 characters long")
+
+	if !form.Valid() {
+		component := page.Register(form)
 		err := component.Render(r.Context(), w)
 		if err != nil {
 			app.serverError(w, r, err)
