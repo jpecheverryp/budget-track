@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/jpecheverryp/budget-track/internal/service"
@@ -82,9 +83,45 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 }
 
 type registerFormData struct {
-	Username string
-	Email    string
-	Password string
+	Values struct {
+		Username string
+		Email    string
+		Password string
+	}
+	Errors struct {
+		Username string
+		Email    string
+		Password string
+	}
+}
+
+func (f *registerFormData) Validate() bool {
+	var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	isValidForm := true
+
+	// Check Username
+	if f.Values.Username == "" {
+		f.Errors.Username = "This field cannot be blank"
+		isValidForm = false
+	}
+
+	// Check Email
+	if f.Values.Email == "" {
+		f.Errors.Email = "This field cannot be blank"
+		isValidForm = false
+	}
+	if !EmailRX.MatchString(f.Values.Email) {
+		f.Errors.Email = "This field must be a valid email address"
+		isValidForm = false
+	}
+
+	// Check Password
+	if f.Values.Password == "" {
+		f.Errors.Password = "This field cannot be blank"
+		isValidForm = false
+	}
+
+	return isValidForm
 }
 
 // Show form to register
@@ -104,17 +141,33 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	registerFormData := &registerFormData{
-		Username: r.Form.Get("username"),
-		Email:    r.Form.Get("email"),
-		Password: r.Form.Get("password"),
+		Values: struct {
+			Username string
+			Email    string
+			Password string
+		}{
+			Username: r.Form.Get("username"),
+			Email:    r.Form.Get("email"),
+			Password: r.Form.Get("password"),
+		},
 	}
 
-	app.logger.Info("form: ", "username", registerFormData.Username)
-	app.logger.Info("form: ", "email", registerFormData.Email)
-	app.logger.Info("form: ", "password", registerFormData.Password)
+	isValid := registerFormData.Validate()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	if !isValid {
+		component := page.Register()
+		err := component.Render(r.Context(), w)
+		if err != nil {
+			app.serverError(w, r, err)
+		}
+		return
+	}
 
 	app.logger.Info("user created succesfully")
-
 	http.Redirect(w, r, "/test", http.StatusSeeOther)
 }
 
@@ -153,5 +206,5 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) postLogout(w http.ResponseWriter, r *http.Request) {
-    app.logger.Info("user logged out succesfully")
+	app.logger.Info("user logged out succesfully")
 }
