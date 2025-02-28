@@ -22,6 +22,7 @@ type application struct {
 	logger         *slog.Logger
 	service        service.Service
 	sessionManager *scs.SessionManager
+	repo           *repository.Queries
 }
 
 const (
@@ -57,6 +58,7 @@ func main() {
 		logger:         logger,
 		service:        service.New(*repo),
 		sessionManager: sessionManager,
+		repo:           repo,
 	}
 
 	logger.Info("starting server", "port", *port)

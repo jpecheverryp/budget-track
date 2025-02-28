@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/jpecheverryp/budget-track/internal/repository"
 	"github.com/jpecheverryp/budget-track/internal/service"
 	"github.com/jpecheverryp/budget-track/internal/validator"
 	"github.com/jpecheverryp/budget-track/views/page"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
@@ -105,13 +107,20 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		Password: r.Form.Get("password"),
 	}
 
-	app.logger.Info("username:", "username", form.Username, "notblank", validator.NotBlank(form.Username))
-
 	form.CheckField(validator.NotBlank(form.Username), "username", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Email), "username", "This field cannot be blank")
 	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
 	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
 	form.CheckField(validator.MinChars(form.Password, 8), "password", "This field must be at least 8 characters long")
+
+	emailCount, err := app.repo.EmailTaken(r.Context(), form.Email)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+	if emailCount > 0 {
+		form.AddFieldError("email", "Email already taken")
+	}
 
 	if !form.Valid() {
 		component := page.Register(form)
@@ -119,6 +128,22 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			app.serverError(w, r, err)
 		}
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(form.Password), 12)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+	newUser := repository.RegisterUserParams{
+		Username:     form.Username,
+		Email:        form.Email,
+		PasswordHash: string(hashedPassword),
+	}
+	err = app.repo.RegisterUser(r.Context(), newUser)
+	if err != nil {
+		app.serverError(w, r, err)
 		return
 	}
 
