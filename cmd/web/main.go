@@ -7,7 +7,6 @@ import (
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/jpecheverryp/budget-track/internal/repository"
-	"github.com/jpecheverryp/budget-track/internal/service"
 
 	"flag"
 	"fmt"
@@ -20,7 +19,6 @@ import (
 
 type application struct {
 	logger         *slog.Logger
-	service        service.Service
 	sessionManager *scs.SessionManager
 	repo           *repository.Queries
 }
@@ -56,7 +54,6 @@ func main() {
 
 	app := &application{
 		logger:         logger,
-		service:        service.New(*repo),
 		sessionManager: sessionManager,
 		repo:           repo,
 	}
