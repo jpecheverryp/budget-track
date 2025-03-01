@@ -7,6 +7,8 @@ package repository
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const emailTaken = `-- name: EmailTaken :one
@@ -18,6 +20,22 @@ func (q *Queries) EmailTaken(ctx context.Context, email string) (int64, error) {
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const getAuthByEmail = `-- name: GetAuthByEmail :one
+SELECT id, password_hash FROM user_account WHERE email = $1
+`
+
+type GetAuthByEmailRow struct {
+	ID           uuid.UUID
+	PasswordHash string
+}
+
+func (q *Queries) GetAuthByEmail(ctx context.Context, email string) (GetAuthByEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, getAuthByEmail, email)
+	var i GetAuthByEmailRow
+	err := row.Scan(&i.ID, &i.PasswordHash)
+	return i, err
 }
 
 const registerUser = `-- name: RegisterUser :exec

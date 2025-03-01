@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -169,8 +171,23 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		Password: r.Form.Get("password"),
 	}
 
+	authData, err := app.repo.GetAuthByEmail(r.Context(), form.Email)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			form.Validator.AddNonFieldError("InvalidCredentials")
+			err := page.Login(form).Render(r.Context(), w)
+			if err != nil {
+				app.serverError(w, r, err)
+			}
+			return
+		}
+		app.serverError(w, r, err)
+		return
+	}
+
 	app.logger.Info("form: ", "email", form.Email)
 	app.logger.Info("form: ", "password", form.Password)
+	app.logger.Info("form: ", "hash", authData.PasswordHash)
 
 	app.logger.Info("user authenticated succesfully")
 
