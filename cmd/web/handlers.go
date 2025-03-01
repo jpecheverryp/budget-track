@@ -20,7 +20,7 @@ func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
-    accounts, err := app.repo.ReadAllAccounts(r.Context())
+	accounts, err := app.repo.ReadAllAccounts(r.Context())
 	if err != nil {
 		app.serverError(w, r, err)
 		return
@@ -67,9 +67,9 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 		app.clientError(w, http.StatusBadRequest)
 	}
 
-    accountName := r.Form.Get("account-name")
+	accountName := r.Form.Get("account-name")
 
-    _, err = app.repo.CreateAccount(r.Context(), accountName)
+	_, err = app.repo.CreateAccount(r.Context(), accountName)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
