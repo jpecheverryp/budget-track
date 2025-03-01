@@ -148,14 +148,9 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/test", http.StatusSeeOther)
 }
 
-type loginFormData struct {
-	Username string
-	Email    string
-	Password string
-}
-
 func (app *application) getLogin(w http.ResponseWriter, r *http.Request) {
-	err := page.Login().Render(r.Context(), w)
+	loginFormData := page.LoginFormData{}
+	err := page.Login(loginFormData).Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
@@ -169,13 +164,13 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginFormData := &loginFormData{
+	form := page.LoginFormData{
 		Email:    r.Form.Get("email"),
 		Password: r.Form.Get("password"),
 	}
 
-	app.logger.Info("form: ", "email", loginFormData.Email)
-	app.logger.Info("form: ", "password", loginFormData.Password)
+	app.logger.Info("form: ", "email", form.Email)
+	app.logger.Info("form: ", "password", form.Password)
 
 	app.logger.Info("user authenticated succesfully")
 
