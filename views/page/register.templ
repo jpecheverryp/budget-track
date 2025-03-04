@@ -4,35 +4,35 @@ import "github.com/jpecheverryp/budget-track/views/layout"
 import "github.com/jpecheverryp/budget-track/internal/validator"
 
 type RegisterFormData struct {
-Username string
-Email string
-Password string
-validator.Validator
+	Username string
+	Email    string
+	Password string
+	validator.Validator
 }
 
 templ Register(formData RegisterFormData) {
-@layout.Guest() {
-<h1>Register</h1>
-<form action="/auth/register" method="POST" novalidate>
-    <div>
-        <label>Username: </label>
-        <p>{ formData.Validator.FieldErrors["username"] }</p>
-        <input type="text" name="username" value={ formData.Username } />
-    </div>
-    <div>
-        <label>Email: </label>
-        <p>{ formData.Validator.FieldErrors["email"] }</p>
-        <input type="email" name="email" value={ formData.Email } />
-    </div>
-    <div>
-        <label>Password: </label>
-        <p>{ formData.Validator.FieldErrors["password"] }</p>
-        <input type="password" name="password" />
-    </div>
-    <div>
-        <input type="submit" value="Register" />
-    </div>
-</form>
-<a href="/auth/login">Login</a>
-}
+	@layout.Guest() {
+		<h1>Register</h1>
+		<form action="/auth/register" method="POST" novalidate>
+			<div>
+				<label>Username: </label>
+				<p>{ formData.Validator.FieldErrors["username"] }</p>
+				<input type="text" name="username" value={ formData.Username }/>
+			</div>
+			<div>
+				<label>Email: </label>
+				<p>{ formData.Validator.FieldErrors["email"] }</p>
+				<input type="email" name="email" value={ formData.Email }/>
+			</div>
+			<div>
+				<label>Password: </label>
+				<p>{ formData.Validator.FieldErrors["password"] }</p>
+				<input type="password" name="password"/>
+			</div>
+			<div>
+				<input type="submit" value="Register"/>
+			</div>
+		</form>
+		<a href="/auth/login">Login</a>
+	}
 }

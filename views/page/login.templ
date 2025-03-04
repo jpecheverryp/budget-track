@@ -4,32 +4,32 @@ import "github.com/jpecheverryp/budget-track/views/layout"
 import "github.com/jpecheverryp/budget-track/internal/validator"
 
 type LoginFormData struct {
-Email string
-Password string
-validator.Validator
+	Email    string
+	Password string
+	validator.Validator
 }
 
 templ Login(formData LoginFormData) {
-@layout.Guest() {
-<h1>Login</h1>
-<form action="/auth/login" method="POST" novalidate>
-    for _, formError := range formData.Validator.NonFieldErrors {
-    <div>{ formError }</div>
-    }
-    <div>
-        <label>Email: </label>
-        <p>{ formData.Validator.FieldErrors["email"] }</p>
-        <input type="email" name="email" />
-    </div>
-    <div>
-        <label>Password: </label>
-        <p>{ formData.Validator.FieldErrors["password"] }</p>
-        <input type="password" name="password" />
-    </div>
-    <div>
-        <input type="submit" value="Login" />
-    </div>
-</form>
-<a href="/auth/register">Register</a>
-}
+	@layout.Guest() {
+		<h1>Login</h1>
+		<form action="/auth/login" method="POST" novalidate>
+			for _, formError := range formData.Validator.NonFieldErrors {
+				<div>{ formError }</div>
+			}
+			<div>
+				<label>Email: </label>
+				<p>{ formData.Validator.FieldErrors["email"] }</p>
+				<input type="email" name="email"/>
+			</div>
+			<div>
+				<label>Password: </label>
+				<p>{ formData.Validator.FieldErrors["password"] }</p>
+				<input type="password" name="password"/>
+			</div>
+			<div>
+				<input type="submit" value="Login"/>
+			</div>
+		</form>
+		<a href="/auth/register">Register</a>
+	}
 }

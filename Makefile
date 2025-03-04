@@ -2,6 +2,7 @@
 .PHONY: audit
 audit: 
 	go fmt ./...
+	templ fmt .
 	go mod tidy
 	go mod verify
 	go vet ./...

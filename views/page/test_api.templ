@@ -39,13 +39,13 @@ templ TestAPI(testPageData TestPageData) {
 				<th>Username</th>
 				<th>Email</th>
 			</tr>
-            for _, userAccount := range testPageData.UserAccounts {
-			<tr>
-				<td>{ userAccount.ID.String() }</td>
-				<td>{ userAccount.Username }</td>
-				<td>{ userAccount.Email }</td>
-			</tr>
-            }
+			for _, userAccount := range testPageData.UserAccounts {
+				<tr>
+					<td>{ userAccount.ID.String() }</td>
+					<td>{ userAccount.Username }</td>
+					<td>{ userAccount.Email }</td>
+				</tr>
+			}
 		</table>
 		<h2>Transactions: </h2>
 		<table>
