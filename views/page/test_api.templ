@@ -4,7 +4,7 @@ import "github.com/jpecheverryp/budget-track/views/layout"
 import "github.com/jpecheverryp/budget-track/views"
 
 templ TestAPI(pageData views.PageData) {
-	@layout.Guest(pageData.Flash) {
+	@layout.Guest(pageData) {
 		<h1>API Test Page</h1>
 		<h2>Accounts:</h2>
 		<table>

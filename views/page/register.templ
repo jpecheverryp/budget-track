@@ -2,6 +2,7 @@ package page
 
 import "github.com/jpecheverryp/budget-track/views/layout"
 import "github.com/jpecheverryp/budget-track/internal/validator"
+import "github.com/jpecheverryp/budget-track/views"
 
 type RegisterFormData struct {
 	Username string
@@ -10,8 +11,8 @@ type RegisterFormData struct {
 	validator.Validator
 }
 
-templ Register(formData RegisterFormData, flashMessage string) {
-	@layout.Guest(flashMessage) {
+templ Register(formData RegisterFormData, pageData views.PageData) {
+	@layout.Guest(pageData) {
 		<h1>Register</h1>
 		<form action="/auth/register" method="POST" novalidate>
 			<div>

@@ -13,8 +13,8 @@ import (
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
-	flashMessage := ""
-	component := page.Home(flashMessage)
+	pageData := views.PageData{}
+	component := page.Home(pageData)
 	err := component.Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
@@ -49,8 +49,8 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {
-	flashMessage := ""
-	component := page.MainDashboard(flashMessage)
+	pageData := views.PageData{}
+	component := page.MainDashboard(pageData)
 	err := component.Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
@@ -80,8 +80,8 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 // Show form to register
 func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
 	registerFormData := page.RegisterFormData{}
-	flashMessage := ""
-	err := page.Register(registerFormData, flashMessage).Render(r.Context(), w)
+	pageData := views.PageData{}
+	err := page.Register(registerFormData, pageData).Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
@@ -116,10 +116,9 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		form.AddFieldError("email", "Email already taken")
 	}
 
-	flashMessage := ""
-
 	if !form.Valid() {
-		component := page.Register(form, flashMessage)
+		pageData := views.PageData{}
+		component := page.Register(form, pageData)
 		err := component.Render(r.Context(), w)
 		if err != nil {
 			app.serverError(w, r, err)
@@ -149,8 +148,8 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) getLogin(w http.ResponseWriter, r *http.Request) {
 	loginFormData := page.LoginFormData{}
-	flashMessage := ""
-	err := page.Login(loginFormData, flashMessage).Render(r.Context(), w)
+	pageData := views.PageData{}
+	err := page.Login(loginFormData, pageData).Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
@@ -170,7 +169,6 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		Email:    r.Form.Get("email"),
 		Password: r.Form.Get("password"),
 	}
-	flashMessage := ""
 
 	// Validate credentials are right format
 	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
@@ -178,7 +176,8 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
 
 	if !form.Valid() {
-		component := page.Login(form, flashMessage)
+		pageData := views.PageData{}
+		component := page.Login(form, pageData)
 		err := component.Render(r.Context(), w)
 		if err != nil {
 			app.serverError(w, r, err)
@@ -192,7 +191,8 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, sql.ErrNoRows) {
 			// No user found, render login
 			form.Validator.AddNonFieldError("InvalidCredentials")
-			err := page.Login(form, flashMessage).Render(r.Context(), w)
+            pageData := views.PageData{}
+			err := page.Login(form, pageData).Render(r.Context(), w)
 			if err != nil {
 				app.serverError(w, r, err)
 			}
@@ -206,7 +206,8 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			form.AddNonFieldError("Invalid credentials")
-			err := page.Login(form, flashMessage).Render(r.Context(), w)
+            pageData := views.PageData{}
+			err := page.Login(form, pageData).Render(r.Context(), w)
 			if err != nil {
 				app.serverError(w, r, err)
 			}

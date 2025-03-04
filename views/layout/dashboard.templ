@@ -1,7 +1,9 @@
 package layout
 
-templ Dashboard(flashMessage string) {
-	@Base(flashMessage) {
+import "github.com/jpecheverryp/budget-track/views"
+
+templ Dashboard(pageData views.PageData) {
+	@Base(pageData) {
 		<div>
 			{ children... }
 		</div>

@@ -1,7 +1,9 @@
 package layout
 
-templ Guest(flashMessage string) {
-	@Base(flashMessage) {
+import "github.com/jpecheverryp/budget-track/views"
+
+templ Guest(pageData views.PageData) {
+	@Base(pageData) {
 		<div>
 			{ children... }
 		</div>

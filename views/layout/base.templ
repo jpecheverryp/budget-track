@@ -1,8 +1,9 @@
 package layout
 
 import "github.com/jpecheverryp/budget-track/views/partial"
+import "github.com/jpecheverryp/budget-track/views"
 
-templ Base(flashMessage string) {
+templ Base(pageData views.PageData) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -13,7 +14,7 @@ templ Base(flashMessage string) {
 		<body>
 			@partial.Navbar()
 			{ children... }
-			@partial.Flash(flashMessage)
+			@partial.Flash(pageData.Flash)
 		</body>
 	</html>
 }

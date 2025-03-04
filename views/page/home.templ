@@ -1,9 +1,10 @@
 package page
 
 import "github.com/jpecheverryp/budget-track/views/layout"
+import "github.com/jpecheverryp/budget-track/views"
 
-templ Home(flashMessage string) {
-	@layout.Guest(flashMessage) {
+templ Home(pageData views.PageData) {
+	@layout.Guest(pageData) {
 		<h1>Budget-Track Home</h1>
 		<p>
 			There's nothing to see her yet
