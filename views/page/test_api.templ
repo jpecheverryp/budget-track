@@ -1,15 +1,10 @@
 package page
 
 import "github.com/jpecheverryp/budget-track/views/layout"
-import "github.com/jpecheverryp/budget-track/internal/repository"
+import "github.com/jpecheverryp/budget-track/views"
 
-type TestPageData struct {
-	Accounts     []repository.Account
-	UserAccounts []repository.GetAllUsersRow
-}
-
-templ TestAPI(testPageData TestPageData, flashMessage string) {
-	@layout.Guest(flashMessage) {
+templ TestAPI(pageData views.PageData) {
+	@layout.Guest(pageData.Flash) {
 		<h1>API Test Page</h1>
 		<h2>Accounts:</h2>
 		<table>
@@ -17,7 +12,7 @@ templ TestAPI(testPageData TestPageData, flashMessage string) {
 				<th>ID</th>
 				<th>Account Name</th>
 			</tr>
-			for _, account := range testPageData.Accounts {
+			for _, account := range pageData.Accounts {
 				<tr>
 					<td>{ account.ID.String() }</td>
 					<td>{ account.Name }</td>
@@ -35,7 +30,7 @@ templ TestAPI(testPageData TestPageData, flashMessage string) {
 				<th>Username</th>
 				<th>Email</th>
 			</tr>
-			for _, userAccount := range testPageData.UserAccounts {
+			for _, userAccount := range pageData.UserAccounts {
 				<tr>
 					<td>{ userAccount.ID.String() }</td>
 					<td>{ userAccount.Username }</td>

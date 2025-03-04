@@ -7,6 +7,7 @@ import (
 
 	"github.com/jpecheverryp/budget-track/internal/repository"
 	"github.com/jpecheverryp/budget-track/internal/validator"
+	"github.com/jpecheverryp/budget-track/views"
 	"github.com/jpecheverryp/budget-track/views/page"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -34,14 +35,13 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 
 	flash := app.sessionManager.PopString(r.Context(), "flash")
 
-	pageData := page.TestPageData{
+	pageData := views.PageData{
 		Accounts:     accounts,
 		UserAccounts: userAccounts,
+		Flash:        flash,
 	}
 
-	flashMessage := flash
-
-	component := page.TestAPI(pageData, flashMessage)
+	component := page.TestAPI(pageData)
 	err = component.Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
