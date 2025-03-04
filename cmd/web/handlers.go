@@ -27,12 +27,18 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, r, err)
 		return
 	}
+	userAccounts, err := app.repo.GetAllUsers(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
 
 	flash := app.sessionManager.PopString(r.Context(), "flash")
 
 	pageData := page.TestPageData{
-		Accounts: accounts,
-		Flash:    flash,
+		Accounts:     accounts,
+		UserAccounts: userAccounts,
+		Flash:        flash,
 	}
 
 	component := page.TestAPI(pageData)

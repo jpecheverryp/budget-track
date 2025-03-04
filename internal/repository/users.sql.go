@@ -22,6 +22,39 @@ func (q *Queries) EmailTaken(ctx context.Context, email string) (int64, error) {
 	return count, err
 }
 
+const getAllUsers = `-- name: GetAllUsers :many
+SELECT id, username, email FROM user_account
+`
+
+type GetAllUsersRow struct {
+	ID       uuid.UUID
+	Username string
+	Email    string
+}
+
+func (q *Queries) GetAllUsers(ctx context.Context) ([]GetAllUsersRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllUsersRow
+	for rows.Next() {
+		var i GetAllUsersRow
+		if err := rows.Scan(&i.ID, &i.Username, &i.Email); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getAuthByEmail = `-- name: GetAuthByEmail :one
 SELECT id, password_hash FROM user_account WHERE email = $1
 `

@@ -7,3 +7,6 @@ SELECT COUNT(*) FROM user_account WHERE email = $1;
 
 -- name: GetAuthByEmail :one
 SELECT id, password_hash FROM user_account WHERE email = $1;
+
+-- name: GetAllUsers :many
+SELECT id, username, email FROM user_account;
