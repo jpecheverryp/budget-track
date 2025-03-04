@@ -6,14 +6,10 @@ import "github.com/jpecheverryp/budget-track/internal/repository"
 type TestPageData struct {
 	Accounts     []repository.Account
 	UserAccounts []repository.GetAllUsersRow
-	Flash        string
 }
 
-templ TestAPI(testPageData TestPageData) {
-	@layout.Guest() {
-		if len(testPageData.Flash) > 0 {
-			<p>{ testPageData.Flash }</p>
-		}
+templ TestAPI(testPageData TestPageData, flashMessage string) {
+	@layout.Guest(flashMessage) {
 		<h1>API Test Page</h1>
 		<h2>Accounts:</h2>
 		<table>

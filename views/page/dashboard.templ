@@ -2,8 +2,8 @@ package page
 
 import "github.com/jpecheverryp/budget-track/views/layout"
 
-templ MainDashboard() {
-	@layout.Dashboard() {
+templ MainDashboard(flashMessage string) {
+	@layout.Dashboard(flashMessage) {
 		<p>
 			Hello Dashboard
 		</p>

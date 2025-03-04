@@ -2,7 +2,7 @@ package layout
 
 import "github.com/jpecheverryp/budget-track/views/partial"
 
-templ Base() {
+templ Base(flashMessage string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -13,6 +13,7 @@ templ Base() {
 		<body>
 			@partial.Navbar()
 			{ children... }
+			@partial.Flash(flashMessage)
 		</body>
 	</html>
 }

@@ -9,8 +9,8 @@ type LoginFormData struct {
 	validator.Validator
 }
 
-templ Login(formData LoginFormData) {
-	@layout.Guest() {
+templ Login(formData LoginFormData, flashMessage string) {
+	@layout.Guest(flashMessage) {
 		<h1>Login</h1>
 		<form action="/auth/login" method="POST" novalidate>
 			for _, formError := range formData.Validator.NonFieldErrors {

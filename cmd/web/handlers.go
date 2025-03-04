@@ -3,9 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/jpecheverryp/budget-track/internal/repository"
 	"github.com/jpecheverryp/budget-track/internal/validator"
@@ -14,7 +12,8 @@ import (
 )
 
 func (app *application) getIndex(w http.ResponseWriter, r *http.Request) {
-	component := page.Home()
+	flashMessage := ""
+	component := page.Home(flashMessage)
 	err := component.Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
@@ -38,10 +37,11 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 	pageData := page.TestPageData{
 		Accounts:     accounts,
 		UserAccounts: userAccounts,
-		Flash:        flash,
 	}
 
-	component := page.TestAPI(pageData)
+	flashMessage := flash
+
+	component := page.TestAPI(pageData, flashMessage)
 	err = component.Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
@@ -49,24 +49,12 @@ func (app *application) getTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getDashboard(w http.ResponseWriter, r *http.Request) {
-	component := page.MainDashboard()
+	flashMessage := ""
+	component := page.MainDashboard(flashMessage)
 	err := component.Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
-}
-
-func (app *application) getTransactionView(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprintf(w, "Showing a single transaction info with id: %d", id)
-}
-
-func (app *application) getTransactionCreate(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Show page to add transaction"))
 }
 
 func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request) {
@@ -92,7 +80,8 @@ func (app *application) postAccountCreate(w http.ResponseWriter, r *http.Request
 // Show form to register
 func (app *application) getRegister(w http.ResponseWriter, r *http.Request) {
 	registerFormData := page.RegisterFormData{}
-	err := page.Register(registerFormData).Render(r.Context(), w)
+	flashMessage := ""
+	err := page.Register(registerFormData, flashMessage).Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
@@ -127,8 +116,10 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		form.AddFieldError("email", "Email already taken")
 	}
 
+	flashMessage := ""
+
 	if !form.Valid() {
-		component := page.Register(form)
+		component := page.Register(form, flashMessage)
 		err := component.Render(r.Context(), w)
 		if err != nil {
 			app.serverError(w, r, err)
@@ -158,7 +149,8 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) getLogin(w http.ResponseWriter, r *http.Request) {
 	loginFormData := page.LoginFormData{}
-	err := page.Login(loginFormData).Render(r.Context(), w)
+	flashMessage := ""
+	err := page.Login(loginFormData, flashMessage).Render(r.Context(), w)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
@@ -178,6 +170,7 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		Email:    r.Form.Get("email"),
 		Password: r.Form.Get("password"),
 	}
+	flashMessage := ""
 
 	// Validate credentials are right format
 	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
@@ -185,7 +178,7 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
 
 	if !form.Valid() {
-		component := page.Login(form)
+		component := page.Login(form, flashMessage)
 		err := component.Render(r.Context(), w)
 		if err != nil {
 			app.serverError(w, r, err)
@@ -199,7 +192,7 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, sql.ErrNoRows) {
 			// No user found, render login
 			form.Validator.AddNonFieldError("InvalidCredentials")
-			err := page.Login(form).Render(r.Context(), w)
+			err := page.Login(form, flashMessage).Render(r.Context(), w)
 			if err != nil {
 				app.serverError(w, r, err)
 			}
@@ -213,7 +206,7 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			form.AddNonFieldError("Invalid credentials")
-			err := page.Login(form).Render(r.Context(), w)
+			err := page.Login(form, flashMessage).Render(r.Context(), w)
 			if err != nil {
 				app.serverError(w, r, err)
 			}
