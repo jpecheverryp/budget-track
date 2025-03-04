@@ -158,22 +158,40 @@ func (app *application) getLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Create new user
+// Login an existing user
 func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
+	// Parse user credentials
 	err := r.ParseForm()
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
 
+	// Store credentials
 	form := page.LoginFormData{
 		Email:    r.Form.Get("email"),
 		Password: r.Form.Get("password"),
 	}
 
+	// Validate credentials are right format
+	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
+	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
+
+	if !form.Valid() {
+		component := page.Login(form)
+		err := component.Render(r.Context(), w)
+		if err != nil {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	// Get ID and Password by email
 	authData, err := app.repo.GetAuthByEmail(r.Context(), form.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
+			// No user found, render login
 			form.Validator.AddNonFieldError("InvalidCredentials")
 			err := page.Login(form).Render(r.Context(), w)
 			if err != nil {
@@ -185,9 +203,27 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logger.Info("form: ", "email", form.Email)
-	app.logger.Info("form: ", "password", form.Password)
-	app.logger.Info("form: ", "hash", authData.PasswordHash)
+	err = bcrypt.CompareHashAndPassword([]byte(authData.PasswordHash), []byte(form.Password))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			form.AddNonFieldError("Invalid credentials")
+			err := page.Login(form).Render(r.Context(), w)
+			if err != nil {
+				app.serverError(w, r, err)
+			}
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	err = app.sessionManager.RenewToken(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "authenticatedUserID", authData.ID.String())
 
 	app.logger.Info("user authenticated succesfully")
 
